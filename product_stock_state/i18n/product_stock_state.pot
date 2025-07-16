@@ -1,0 +1,12 @@
+# Template for Product Stock State translations
+# Copyright (C) 2025 OCA
+msgid ""
+msgstr ""
+"Project-Id-Version: Product Stock State 17.0\n"
+"POT-Creation-Date: 2025-07-14\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+# ...existing template...
