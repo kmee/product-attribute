@@ -4,7 +4,6 @@ from odoo import api, fields, models
 
 
 class ProductCategory(models.Model):
-
     _inherit = "product.category"
 
     # This is the // as Odoo core field in product model
@@ -71,9 +70,9 @@ class ProductCategory(models.Model):
     def _compute_date_fields(self):
         for rec in self:
             for date in rec._get_date_fields():
-                parent_value = getattr(rec.parent_id, "%s" % date)
-                value = getattr(rec, "%s" % date)
+                parent_value = getattr(rec.parent_id, date)
+                value = getattr(rec, date)
                 setattr(rec, date, value or parent_value)
 
     def _get_parent_specific_and_parent_date_fields(self):
-        return ["parent_id.%s" % date_field for date_field in self._get_date_fields()]
+        return [f"parent_id.{date_field}" for date_field in self._get_date_fields()]

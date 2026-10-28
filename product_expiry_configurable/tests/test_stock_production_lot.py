@@ -3,8 +3,7 @@ from datetime import datetime
 import freezegun
 
 from odoo import fields
-from odoo.tests import TransactionCase
-from odoo.tests.common import Form
+from odoo.tests import Form, TransactionCase
 
 from .common import ProductExpiryCategoryCommon
 
@@ -23,8 +22,8 @@ class TestProductCategory(ProductExpiryCategoryCommon, TransactionCase):
               and expiration_time are set to 2 each of them.
               Create product lot.
         Expected result:
-             The expected values of lot alert_date, use_date, removal_date and expiration_date
-              are 2 days after current_date.
+             The expected values of lot alert_date, use_date, removal_date and
+             expiration_date are 2 days after current_date.
         """
 
         def _get_times():
@@ -34,7 +33,7 @@ class TestProductCategory(ProductExpiryCategoryCommon, TransactionCase):
             return ["alert_date", "use_date", "removal_date", "expiration_date"]
 
         for time in _get_times():
-            setattr(self.product, "%s" % time, 2)
+            setattr(self.product, time, 2)
 
         with freezegun.freeze_time("2022-02-10 10:00:00"):
             self.product.use_expiration_date = True
@@ -65,8 +64,8 @@ class TestProductCategory(ProductExpiryCategoryCommon, TransactionCase):
               Product alert_time, use_time and removal_time are set to 2 each of them.
               Create product lot with expiration_date.
         Expected result:
-             The expected values of lot alert_date, use_date, removal_date and expiration_date
-              are 2 days before expiration_date.
+             The expected values of lot alert_date, use_date, removal_date and
+             expiration_date are 2 days before expiration_date.
         """
 
         def _get_times():
@@ -78,10 +77,9 @@ class TestProductCategory(ProductExpiryCategoryCommon, TransactionCase):
         self.product.use_expiration_date = True
 
         for time in _get_times():
-            setattr(self.product, "%s" % time, 2)
+            setattr(self.product, time, 2)
 
         with freezegun.freeze_time("2022-02-12 10:00:00"):
-
             lot = self.StockProductionLot.create(
                 {
                     "name": "lot1",
@@ -100,8 +98,8 @@ class TestProductCategory(ProductExpiryCategoryCommon, TransactionCase):
         Test case:
               Create a product without tracking.
         Expected result:
-             The expected values of lot alert_date, use_date, removal_date and expiration_date
-              are False
+             The expected values of lot alert_date, use_date, removal_date and
+             expiration_date are False
         """
         product = self.ProductProduct.create(
             {
@@ -133,8 +131,8 @@ class TestProductCategory(ProductExpiryCategoryCommon, TransactionCase):
 
         Expected result:
              First dates are expected to be False.
-             After adding the expiration_date, the fields alert_date, use_date and removal_date
-             should be computed according to 'expiration_date'.
+             After adding the expiration_date, the fields alert_date, use_date and
+             removal_date should be computed according to 'expiration_date'.
         """
 
         def _get_times():
@@ -146,7 +144,7 @@ class TestProductCategory(ProductExpiryCategoryCommon, TransactionCase):
         self.product.use_expiration_date = False
 
         for time in _get_times():
-            setattr(self.product, "%s" % time, 2)
+            setattr(self.product, time, 2)
 
         with freezegun.freeze_time("2022-02-12 10:00:00"):
             lot = self.StockProductionLot.create(
@@ -193,7 +191,7 @@ class TestProductCategory(ProductExpiryCategoryCommon, TransactionCase):
         self.product.use_expiration_date = True
 
         for time in _get_times():
-            setattr(self.product, "%s" % time, 2)
+            setattr(self.product, time, 2)
 
         lot = self.StockProductionLot.create(
             {
@@ -208,20 +206,14 @@ class TestProductCategory(ProductExpiryCategoryCommon, TransactionCase):
             {"name": "Internal test location", "usage": "internal"}
         )
 
-        self.env["stock.quant"].create(
-            {
-                "location_id": stock_location.id,
-                "lot_id": lot.id,
-                "quantity": 10,
-                "product_id": self.product.id,
-                "company_id": self.env.company.id,
-            }
+        self.env["stock.quant"]._update_available_quantity(
+            self.product, stock_location, 10, lot_id=lot
         )
 
         with freezegun.freeze_time("2022-02-12 10:00:00"):
             counter = 1
             for date in _get_dates():
-                self.assertFalse(getattr(lot, "%s_reminded" % date))
+                self.assertFalse(getattr(lot, f"{date}_reminded"))
                 self.env["stock.lot"]._expiry_date_exceeded(date_field=date)
                 activity_id = self.env.ref(
                     "product_expiry_configurable.mail_activity_type_expiry_date_reached"
@@ -237,6 +229,6 @@ class TestProductCategory(ProductExpiryCategoryCommon, TransactionCase):
                         ("res_id", "=", lot.id),
                     ]
                 )
-                self.assertTrue(getattr(lot, "%s_reminded" % date))
+                self.assertTrue(getattr(lot, f"{date}_reminded"))
                 self.assertEqual(activity_count, counter)
                 counter += 1

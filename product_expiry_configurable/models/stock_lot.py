@@ -3,11 +3,10 @@
 
 import datetime
 
-from odoo import SUPERUSER_ID, _, api, fields, models
+from odoo import SUPERUSER_ID, api, fields, models
 
 
 class StockLot(models.Model):
-
     _inherit = "stock.lot"
 
     use_date_reminded = fields.Boolean(default=False)
@@ -44,11 +43,11 @@ class StockLot(models.Model):
 
     @api.model
     def _expiry_date_exceeded(self, date_field=False):
-        """Log an activity on internally stored lots whose "date" field has been reached.
-        No further activity will be generated on lots whose "date"
-        has already been reached (even if the "date" is changed).
+        """Log an activity on internally stored lots whose "date" field has
+        been reached. No further activity will be generated on lots whose
+        "date" has already been reached (even if the "date" is changed).
         """
-        date_reminded_field = "%s_reminded" % date_field
+        date_reminded_field = f"{date_field}_reminded"
         expiry_lots = self.env["stock.lot"].search(
             self._get_expired_lots_domain_for_remind(date_field, date_reminded_field)
         )
@@ -65,9 +64,10 @@ class StockLot(models.Model):
             lot.activity_schedule(
                 "product_expiry_configurable.mail_activity_type_expiry_date_reached",
                 user_id=lot.product_id.responsible_id.id or SUPERUSER_ID,
-                note=_(
-                    "The {date_name} has been reached for this lot/serial number"
-                ).format(date_name=date_name),
+                note=self.env._(
+                    "The %(date_name)s has been reached for this lot/serial number",
+                    date_name=date_name,
+                ),
             )
 
         expiry_lots.write({date_reminded_field: True})

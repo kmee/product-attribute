@@ -22,7 +22,7 @@ class TestProductTemplate(ProductExpiryCategoryCommon, TransactionCase):
         self.assertTrue(self.product.use_expiration_date)
         for time in self._get_times():
             self.assertEqual(getattr(self.product, time), 0)
-            setattr(self.categ_lvl_1_1_1, "%s" % time, 2)
+            setattr(self.categ_lvl_1_1_1, time, 2)
             self.assertEqual(getattr(self.product, time), 2)
 
     def test_specific_values_set(self):
@@ -38,5 +38,5 @@ class TestProductTemplate(ProductExpiryCategoryCommon, TransactionCase):
         self.assertTrue(self.product.use_expiration_date)
         for time in self._get_times():
             self.assertEqual(getattr(self.product, time), 0)
-            setattr(self.product, "%s" % time, 2)
+            setattr(self.product, time, 2)
             self.assertEqual(getattr(self.product, time), 2)

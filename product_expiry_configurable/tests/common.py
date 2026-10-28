@@ -27,7 +27,8 @@ class ProductExpiryCategoryCommon:
             {
                 "name": "test product",
                 "categ_id": cls.categ_lvl_1_1_1.id,
-                "type": "product",
+                "type": "consu",
+                "is_storable": True,
             }
         )
 

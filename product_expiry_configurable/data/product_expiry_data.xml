@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo noupdate="1">
-
     <record id="mail_activity_type_expiry_date_reached" model="mail.activity.type">
         <field name="name">Expiry Date Reached</field>
         <field name="category">default</field>
@@ -17,8 +16,6 @@
         <field name="state">code</field>
         <field name="interval_number">1</field>
         <field name="interval_type">days</field>
-        <field name="numbercall">-1</field>
-        <field name="doall" eval="0" />
         <field
             name="code"
         >model._expiry_date_exceeded(date_field='removal_date')</field>
@@ -33,8 +30,6 @@
         <field name="state">code</field>
         <field name="interval_number">1</field>
         <field name="interval_type">days</field>
-        <field name="numbercall">-1</field>
-        <field name="doall" eval="0" />
         <field name="code">model._expiry_date_exceeded(date_field='use_date')</field>
         <field name="nextcall" eval="(DateTime.now()).strftime('%Y-%m-%d 22:00:00')" />
     </record>
@@ -51,12 +46,9 @@
         <field name="state">code</field>
         <field name="interval_number">1</field>
         <field name="interval_type">days</field>
-        <field name="numbercall">-1</field>
-        <field name="doall" eval="0" />
         <field
             name="code"
         >model._expiry_date_exceeded(date_field='expiration_date')</field>
         <field name="nextcall" eval="(DateTime.now()).strftime('%Y-%m-%d 22:00:00')" />
     </record>
-
 </odoo>
